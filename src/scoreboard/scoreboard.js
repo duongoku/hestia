@@ -1,76 +1,99 @@
-/*eslint-disable*/
-import sortBy from 'sort-by';
-import React from 'react';
-import "react-table/react-table.css";
+import React from "react";
+import ReactDOM from "react-dom";
 import {
   Table,
-  TableBody,
-  TableCell,
-  TableRow,
   TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
   Paper
 } from "@material-ui/core";
+import Sorting from "./Sorting.js";
+import "./styles.css";
 
-//default data
-const obj = {
-    problem_code: ['A1','B2','C3'],
-    data: [
-        {handle: 'GHTH01', penalty:40000, A1: 70, B2: 100, C3: 85, subs: [3,2,2], total: -255},
-        {handle: 'GHTH02', penalty:50000, A1: 100, B2: 50, C3: 50, subs: [1,2,2], total: -200},
-        {handle: 'GHTH03', penalty:30000, A1: 0, B2: 100, C3: 100, subs: [0,2,3], total: -200},
-    ],
-    columns: [
-        {Header: 'Handle', accessor: 'handle'},
-        {Header: 'Penalty', accessor: 'penalty'},
-        {Header: 'Total', accessor: 'total'},
-    ],
+let Team = ["GHTH01", "GHTH02", "GHTH03", "GHTH04", "GHTH05"];
+let Team_Score = [250, 200, 150, 100, 150];
+let Team_Penalty = [42000, 50000, 23423, 24242, 24244];
+// let Problem_List = ["A1", "B2", "C3"];
+// let Problem_Score = [
+//   { A1: 1, B2: 2, C3: 3 },
+//   { A1: 4, B2: 5, C3: 6 },
+//   { A1: 7, B2: 8, C3: 9 }
+// ];
+let Subs = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+let obj = {
+  columns: [
+    { Header: "Team_Name", accessor: "name" },
+    { Header: "Team_Score", accessor: "Score" },
+    { Header: "Team_Penalty", accessor: "Penalty" }
+  ]
 };
+class ScoreBoard extends React.Component {
+  constructor(props) {
+    super(props);
+    Team = Team.map((name, index) => {
+      return {
+        name: name,
+        Score: Team_Score[index],
+        Penalty: Team_Penalty[index],
+        // Problem_Score: Problem_Score[index],
+        // Subs: Subs[id],
+        key: name,
+        ref: `name${index}`
+      };
+    });
+    this.state = { Team };
+    // let l = Problem_List.length;
+    // for (let i = 0; i < l; i++) {
+    //   let Temp = { Header: "", accessor: "" };
+    //   Temp.Header = Problem_List[i];
+    //   Temp.accessor = Problem_List[i];
+    //   obj.columns.push(Temp);
+    // }
+    console.log(obj.columns);
+    console.log(1);
+  }
+  /*
+  handleChange(fromIndex, toIndex)
+  thằng vừa submit từ rank fromIndex -> rank toIndex, xóa và nhét nó vào vị trí mới = splice
+  */
+  handleChange(fromIndex) {
+    let toIndex = parseInt(Math.random() * 5);
+    let newArray = this.state.Team.slice(0);
 
-class Scoreboard extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = obj; //default data
-
-        const problems = this.state.problem_code.length;
-        for(let i = 0; i < problems; i++) {
-            let temp = {Header: '', accessor: ''};
-            temp.Header = this.state.problem_code[i];
-            temp.accessor = this.state.problem_code[i];
-            this.state.columns.push(temp);
-        }
-    }
-
-    render() {
-        this.state.data.sort(sortBy('total', 'penalty'));
-        //Headers
-        let headers = this.state.columns.map((Headers) => {
-            return(
-                <TableCell>{Headers.Header}</TableCell>
-            );
-        });
-        //Table's body data
-        let data_table = this.state.data.map((RowData) => {
-            return(
-                <TableRow>{
-                this.state.columns.map((CellData) => {
-                    if(CellData.accessor=='total')
-                    return(<TableCell>{-RowData[CellData.accessor]}</TableCell>);
-                    else
-                    return(<TableCell>{RowData[CellData.accessor]}</TableCell>);
-                })
-                }</TableRow>
-            );
-        });
-        return(
-            <Paper>
-                <Table>
-                    <TableHead>{headers}</TableHead>
-                    <TableBody>{data_table}</TableBody>
-                </Table>
-            </Paper>
-        )
-    }
+    newArray.splice(toIndex, 0, newArray.splice(fromIndex, 1)[0]);
+    this.setState({ Team: newArray });
+  }
+  render() {
+    /*
+    In ra cái thanh <TableHead>
+    */
+    console.log(obj.columns);
+    let headers = obj.columns.map(Column_Name => {
+      return <TableCell>{Column_Name.Header}</TableCell>;
+    });
+    let data_Table = this.state.Team.map(Team => {
+      // if()
+      return (
+        <TableRow>
+          {obj.columns.map(CellData => {
+            return <TableCell>{Team[CellData.accessor]}</TableCell>;
+          })}
+        </TableRow>
+      );
+    });
+    return (
+      <Table>
+        <TableHead>{headers}</TableHead>
+        <Sorting
+          Teams={this.state.Team}
+          columns={obj.columns}
+          onBoardClick={this.handleChange.bind(this)}
+        />
+      </Table>
+    );
+  }
 }
 
-export default Scoreboard;
+const rootElement = document.getElementById("root");
+ReactDOM.render(<ScoreBoard />, rootElement);
