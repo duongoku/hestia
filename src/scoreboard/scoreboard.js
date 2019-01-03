@@ -37,6 +37,11 @@ import {
 
 default data for example*/
 
+/**
+ * Scoreboard component
+ * @Render data into a Scoreboard table using material-ui
+ */
+
 class Scoreboard extends React.Component {
     constructor(props) {
         super(props);
