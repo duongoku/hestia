@@ -25,6 +25,9 @@ import {
             {handle: 'GHTH01', penalty:40000, A1: 70, B2: 100, C3: 85, subs: [3,2,2], total: -255},
             {handle: 'GHTH02', penalty:50000, A1: 100, B2: 50, C3: 50, subs: [1,2,2], total: -200},
             {handle: 'GHTH03', penalty:30000, A1: 0, B2: 100, C3: 100, subs: [0,2,3], total: -200},
+
+            //the reason behind the minus sign is that sort-by npm sort the array 
+            //in the descending order but we need the reverse one
         ],
 
         columns: [
