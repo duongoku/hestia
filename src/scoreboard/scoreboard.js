@@ -38,9 +38,11 @@ import {
 default data for example*/
 
 /**
- * Scoreboard component
- * @Render data into a Scoreboard table using material-ui
- */
+ * @name Scoreboard
+ * @desc Process data to a scoreboard table
+ * @param {Array} obj : An array containing objects satisfying the schema in the default data given above
+ * @return {Table} : A scoreboard table <Scoreboard/>
+*/
 
 class Scoreboard extends React.Component {
     constructor(props) {
